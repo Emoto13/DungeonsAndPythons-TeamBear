@@ -2,26 +2,26 @@ from base_entity import BaseEntity
 
 
 class Hero(BaseEntity):
-    def get_health(self):
-        pass
+    def __init__(self, name: str = "Hero", title: str = "No title", health: float = 1, mana: float = 0,
+                 mana_regeneration_rate: float = 0):
+        super().__init__(health=health, mana=mana)
+        self.name = name
+        self.title = title
+        self.mana_regeneration_rate = mana_regeneration_rate
 
-    def get_mana(self):
-        pass
+    def attack(self, by="weapon"):
+        dicts = {
+            "weapon": self.weapon.damage,
+            "spell": self.spell.damage
+        }
 
-    def is_alive(self):
-        pass
+        return dicts[by]
 
-    def can_cast(self):
-        pass
 
-    def take_damage(self, damage):
-        pass
+def main():
+    h = Hero()
+    print(h.attack('alabala'))
 
-    def take_healing(self):
-        pass
 
-    def take_mana(self):
-        pass
-
-    def attack(self):
-        pass
+if __name__ == '__main__':
+    main()
