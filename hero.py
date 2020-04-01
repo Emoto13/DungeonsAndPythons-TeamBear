@@ -9,6 +9,9 @@ class Hero(BaseEntity):
         self.title = title
         self.mana_regeneration_rate = mana_regeneration_rate
 
+    def known_as(self):
+        return f'{self.name} the {self.title}'
+
     def attack(self, by="weapon"):
         dicts = {
             "weapon": self.weapon.damage,
@@ -16,7 +19,6 @@ class Hero(BaseEntity):
         }
 
         return dicts[by]
-
 
 def main():
     h = Hero()
