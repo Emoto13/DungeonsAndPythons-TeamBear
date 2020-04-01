@@ -14,8 +14,8 @@ class BaseEntity(ABC, VerificationMixin):
         self.mana = mana
         self.MAX_MANA = mana
 
-        self.weapon = Weapon()
-        self.spell = Spell()
+        self.weapon = None
+        self.spell = None
 
     def get_health(self):
         return self.health
@@ -27,16 +27,19 @@ class BaseEntity(ABC, VerificationMixin):
         return self.health > 0
 
     def can_cast(self):
+        if self.spell is None:
+            return False
+
         return self.mana >= self.spell.mana_cost
 
-    def take_damage(self, damage_points):
+    def take_damage(self, damage_points: float):
         self.verify_value(damage_points)
         self.health -= damage_points
 
         if self.health < 0:
             self.health = 0
 
-    def take_healing(self, healing_points):
+    def take_healing(self, healing_points: float) -> bool:
         if self.health == 0:
             return False
         self.verify_value(healing_points)
@@ -44,15 +47,15 @@ class BaseEntity(ABC, VerificationMixin):
         self.health = self.verify_if_more_than_max(self.health, self.MAX_HEALTH)
         return True
 
-    def take_mana(self, mana_points):
+    def take_mana(self, mana_points: float):
         self.verify_value(mana_points)
         self.mana += mana_points
         self.mana = self.verify_if_more_than_max(self.mana, self.MAX_MANA)
 
-    def equip(self, weapon=None):
+    def equip(self, weapon: Weapon = None):
         self.weapon = weapon
 
-    def learn(self, spell=None):
+    def learn(self, spell: Spell = None):
         self.spell = spell
 
     @abstractmethod
