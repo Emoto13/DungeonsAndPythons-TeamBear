@@ -12,13 +12,17 @@ class Hero(BaseEntity):
     def known_as(self):
         return f'{self.name} the {self.title}'
 
-    def attack(self, by="weapon"):
+    def attack(self, by: str = "weapon") -> float:
         dicts = {
-            "weapon": self.weapon.damage,
-            "spell": self.spell.damage
+            "weapon": self.weapon,
+            "spell": self.spell
         }
 
-        return dicts[by]
+        if dicts[by] is None:
+            return 0
+
+        return dicts[by].damage
+
 
 def main():
     h = Hero()
