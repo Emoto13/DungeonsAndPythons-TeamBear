@@ -1,56 +1,45 @@
-from utils import read_file, add_coordinates
+from utils import read_file, add_coordinates, set_coordinates_for_starting_positions_and_treasures, move_is_legal
 from hero import Hero
 
 
-class Dungeon():
+class Dungeon:
 
-	def __init__(self,file_path : str = None):
-		self.starting_positions = []
-		self.treasures = []
+    def __init__(self, file_path: str = None):
+        self.starting_positions = []
+        self.treasures = []
 
-		self.dungeon_map = read_file(file_path)
-		self.set_starting_positions_and_tresures()
+        self.dungeon_map = read_file(file_path)
+        self.set_starting_positions_and_treasures()
 
-		self.curr_row = 0
-		self.curr_column = 0
-		self.hero = None
+        self.curr_row = 0
+        self.curr_column = 0
+        self.hero = None
 
+    def set_starting_positions_and_treasures(self):
+        dicts = {
+            'S': add_coordinates(self.starting_positions),
+            'T': add_coordinates(self.treasures),
+        }
 
-	def set_starting_positions_and_tresures(self):
-		dicts = {
-			'S' : add_coordinates(self.starting_positions),
-			'T' : add_coordinates(self.treasures),
- 		}
+        set_coordinates_for_starting_positions_and_treasures(self.dungeon_map, dicts)
 
- 		#TODO refactor to another func
-		for row in range(len(self.dungeon_map)):
-			for col in range(len(self.dungeon_map[row])):
+    def spawn(self, hero_instance: Hero = None):
+        self.hero = hero_instance
+        self.__set_hero_coordinates()
 
-				if self.dungeon_map[row][col] == 'S' or self.dungeon_map[row][col] == 'T' :
-					dicts[self.dungeon_map[row][col]](row,col)
-
-
-	def spawn(self,hero_instance : Hero = None):
-		self.hero = hero_instance
-
-		self.set_hero_coordinates_and_character_on_map()
-
-
-	def set_hero_coordinates_and_character_on_map(self):
-		self.curr_row = self.starting_positions[0][0]
-		self.curr_column = self.starting_positions[0][1]
-		del self.starting_positions[0]
-
-		self.dungeon_map[self.curr_row][self.curr_column] = 'H'
-
+    def __set_hero_coordinates(self):
+        self.curr_row = self.starting_positions[0][0]
+        self.curr_column = self.starting_positions[0][1]
+        del self.starting_positions[0]
+        self.dungeon_map[self.curr_row][self.curr_column] = 'H'
 
 def main():
-	d = Dungeon('level1.txt')
-	h = Hero()
-	d.spawn(h)
-	print(d.curr_column)
-	print(d.dungeon_map)
+    d = Dungeon('level1.txt')
+    h = Hero()
+    print(d.curr_column)
+    print(d.dungeon_map)
+    print(d.starting_positions)
 
 
 if __name__ == '__main__':
-	main()
+    main()
