@@ -34,6 +34,55 @@ def move_is_legal(dungeon_map, row, col):
     return True
 
 
+def fight_enemy(hero):
+    # TODO REFACTOR FOR SPELLS AND SPELL RANGE
+    from enemy import Enemy
+    enemy = Enemy.spawn_enemy()
+    while hero.is_alive():
+        enemy.take_damage(hero.attack())
+        if not enemy.is_alive():
+            break
+        hero.take_damage(enemy.attack())
+
+
+def collect_treasure(hero):
+    import random
+    from weapon import Weapon
+    from spell import Spell
+
+    types_treasure = ('health', 'mana', 'weapon', 'spell')
+    weapon_names = ('Sword', 'Hammer', 'Mace', 'Boomerang', 'Shuriken', 'Blade', 'Knifes', 'Dildo')
+    spell_names = ('Avada Kedavra', 'Expecto Patronum', 'Abra Kadabra', 'Crucio', 'Accio', 'Wingardium Leviosa')
+
+    dict_treasure_values = {
+        'health': random.randint(1, 20),
+        'mana': random.randint(1, 20),
+        'weapon': Weapon.create_weapon(random.choice(weapon_names)),
+        'spell': Spell.create_spell(random.choice(spell_names))
+    }
+
+    dict_add_treasure = {
+        'health': hero.take_healing,
+        'mana': hero.take_mana,
+        'weapon': hero.equip,
+        'spell': hero.learn
+    }
+
+    treasure = random.choice(types_treasure)
+    treasure_type = dict_treasure_values[treasure]
+
+    dict_add_treasure[treasure](treasure_type)
+    print(f'You collected {treasure}')
+
+
+def nothing_happens(hero):
+    print(f'Nothing happened with hero {hero.name} the {hero.title}')
+
+
+def end_game(hero):
+    pass
+
+
 def main():
     print(move_is_legal([[1, 2]], 0, 1))
 
