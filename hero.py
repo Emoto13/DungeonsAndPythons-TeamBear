@@ -12,16 +12,13 @@ class Hero(BaseEntity):
     def known_as(self):
         return f'{self.name} the {self.title}'
 
-    def attack(self, by: str = "weapon") -> float:
-        dicts = {
-            "weapon": self.weapon,
-            "spell": self.spell
-        }
+    def attack(self) -> float:
+        spell_is_more_powerful = self.spell.damage >= self.weapon.damage
 
-        if dicts[by] is None:
-            return 0
-
-        return dicts[by].damage
+        if not spell_is_more_powerful and self.can_cast():
+            self.reduce_mana()
+            return self.spell.damage
+        return self.weapon.damage
 
 
 def main():
