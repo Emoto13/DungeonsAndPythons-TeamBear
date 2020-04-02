@@ -2,8 +2,8 @@ from base_entity import BaseEntity
 
 
 class Hero(BaseEntity):
-    def __init__(self, name: str = "Hero", title: str = "No title", health: float = 1, mana: float = 0,
-                 mana_regeneration_rate: float = 0):
+    def __init__(self, name: str = "Hero", title: str = "No title", health: int = 1, mana: int = 0,
+                 mana_regeneration_rate: int = 0):
         super().__init__(health=health, mana=mana)
         self.name = name
         self.title = title

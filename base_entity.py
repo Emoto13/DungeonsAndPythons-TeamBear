@@ -5,7 +5,7 @@ from spell import Spell
 
 
 class BaseEntity(ABC, VerificationMixin):
-    def __init__(self, health: float = 1, mana: float = 0):
+    def __init__(self, health: int = 1, mana: int = 0):
         self.verify_health(health)
         self.health = health
         self.MAX_HEALTH = health
@@ -32,14 +32,14 @@ class BaseEntity(ABC, VerificationMixin):
 
         return self.mana >= self.spell.mana_cost
 
-    def take_damage(self, damage_points: float):
+    def take_damage(self, damage_points: int):
         self.verify_value(damage_points)
         self.health -= damage_points
 
         if self.health < 0:
             self.health = 0
 
-    def take_healing(self, healing_points: float) -> bool:
+    def take_healing(self, healing_points: int) -> bool:
         if self.health == 0:
             return False
         self.verify_value(healing_points)
@@ -47,7 +47,7 @@ class BaseEntity(ABC, VerificationMixin):
         self.health = self.verify_if_more_than_max(self.health, self.MAX_HEALTH)
         return True
 
-    def take_mana(self, mana_points: float):
+    def take_mana(self, mana_points: int):
         self.verify_value(mana_points)
         self.mana += mana_points
         self.mana = self.verify_if_more_than_max(self.mana, self.MAX_MANA)
