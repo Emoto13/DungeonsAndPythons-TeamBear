@@ -14,8 +14,8 @@ class BaseEntity(ABC, VerificationMixin):
         self.mana = mana
         self.MAX_MANA = mana
 
-        self.weapon = None
-        self.spell = None
+        self.weapon = Weapon()
+        self.spell = Spell()
 
     def get_health(self):
         return self.health
@@ -51,6 +51,9 @@ class BaseEntity(ABC, VerificationMixin):
         self.verify_value(mana_points)
         self.mana += mana_points
         self.mana = self.verify_if_more_than_max(self.mana, self.MAX_MANA)
+
+    def reduce_mana(self):
+        self.mana -= self.spell.mana_cost
 
     def equip(self, weapon: Weapon = None):
         self.weapon = weapon
