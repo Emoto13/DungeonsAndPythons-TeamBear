@@ -1,8 +1,9 @@
 from base_entity import BaseEntity
+import random
 
 
 class Enemy(BaseEntity):
-    def __init__(self, health: float = 1, mana: float = 0, damage: float = 0):
+    def __init__(self, health: int = 1, mana: int = 0, damage: int = 0):
         super().__init__(health, mana)
         self.damage = damage
 
@@ -14,3 +15,10 @@ class Enemy(BaseEntity):
             return self.spell.damage
 
         return max(self.weapon.damage, self.damage)
+
+    @classmethod
+    def spawn_enemy(cls):
+        health = random.randint(1, 100)
+        mana = random.randint(1, 100)
+        damage = random.randint(1, 20)
+        return cls(health=health, mana=mana, damage=damage)
