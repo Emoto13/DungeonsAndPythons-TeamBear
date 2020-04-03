@@ -1,9 +1,12 @@
 import random
+from verification_mixin import VerificationMixin
 
 
-class Weapon:
+class Weapon(VerificationMixin):
 
     def __init__(self, name: str = 'Weapon', damage: int = 0):
+        self.verify_attributes(name, damage)
+
         self.name = name
         self.damage = damage
 
