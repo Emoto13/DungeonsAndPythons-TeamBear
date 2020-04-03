@@ -32,3 +32,8 @@ class VerificationMixin:
 
         for attribute in attributes:
             dicts[type(attribute)](attribute)
+
+    @staticmethod
+    def verify_command(dicts, command):
+        if command not in dicts.keys():
+            raise ValueError("No such command. Try again")
