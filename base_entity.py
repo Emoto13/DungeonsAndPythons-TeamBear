@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from verfication_mixin import VerificationMixin
+from verification_mixin import VerificationMixin
 from weapon import Weapon
 from spell import Spell
 
@@ -38,7 +38,7 @@ class BaseEntity(ABC, VerificationMixin):
         self.verify_value(damage_points)
         self.health -= damage_points
 
-        if self.health < 0:
+        if not self.is_alive():
             self.health = 0
 
     def take_healing(self, healing_points: int) -> bool:
@@ -50,6 +50,8 @@ class BaseEntity(ABC, VerificationMixin):
         return True
 
     def take_mana(self, mana_points: int):
+        if self.health == 0:
+            return False
         self.verify_value(mana_points)
         self.mana += mana_points
         self.mana = self.verify_if_more_than_max(self.mana, self.MAX_MANA)
