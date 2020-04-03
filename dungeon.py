@@ -1,13 +1,11 @@
-from utils import read_file, add_coordinates, set_coordinates_for_starting_positions, move_is_legal, \
-    fight_enemy, collect_treasure, end_game, nothing_happens
+from utils import read_file, add_coordinates, set_coordinates_for_starting_positions, move_is_legal \
+    , reached_exit, take_action_after_move, apply_direction
 from hero import Hero
 from weapon import Weapon
 
 
 # TODO WRITE SOME TEST SO MARTO DOESN'T COMPLAIN ABOUT IT
-# TODO UPDATE HERO POSITION ON THE MAP
-# TODO REFACTOR PRIVATE METHODS
-# TODO ADD VERIFICATION FOR NEEDED ATTRIBUTES IN CLASSES
+# TODO ADD USER CHOICE TO EQUIP AND LEARN
 
 class Dungeon:
 
@@ -30,14 +28,24 @@ class Dungeon:
             print(*rows)
 
     def move_hero(self, direction):
-        row, col = self.__apply_direction(direction)
+        row, col = apply_direction(direction, self.curr_row, self.curr_column)
 
         if not move_is_legal(self.dungeon_map, row, col):
             return False
 
-        self.__take_action_after_move(row, col)
+        position = self.dungeon_map[row][col]
 
-        self.__update_current_row_and_column(row, col)
+        if reached_exit(position):
+            return True
+
+        take_action_after_move(self.hero, position)
+
+        if not self.hero.is_alive():
+            self.__respawn_hero()
+            return False
+
+        self.hero.take_mana(self.hero.mana_regeneration_rate)
+        self.__update_position(row, col)
         return True
 
     def __set_starting_positions(self):
@@ -47,31 +55,19 @@ class Dungeon:
 
         set_coordinates_for_starting_positions(self.dungeon_map, dicts)
 
-    def __take_action_after_move(self, row, col): # MOVE
-        position = self.dungeon_map[row][col]
-        dict_of_actions = {
-            'E': fight_enemy,
-            'T': collect_treasure,
-            'G': end_game,
-            '.': nothing_happens
-        }
+    def __respawn_hero(self):
+        if not self.starting_positions:
+            print('Game over')
+            return
+        hero = Hero(name=self.hero.name, title=self.hero.title,
+                    health=self.hero.MAX_HEALTH,
+                    mana=self.hero.MAX_MANA,
+                    mana_regeneration_rate=self.hero.mana_regeneration_rate)
+        self.spawn(hero)
 
-        dict_of_actions[position](self.hero)
-
-    def __apply_direction(self, direction): # MOVE
-        dicts = {
-            'up': (self.curr_row - 1, self.curr_column),
-            'down': (self.curr_row + 1, self.curr_column),
-            'left': (self.curr_row, self.curr_column - 1),
-            'right': (self.curr_row, self.curr_column + 1)
-        }
-
-        row = dicts[direction][0]
-        col = dicts[direction][1]
-
-        return row, col
-
-    def __update_current_row_and_column(self, row, col):
+    def __update_position(self, row, col):
+        self.dungeon_map[self.curr_row][self.curr_column] = '.'
+        self.dungeon_map[row][col] = 'H'
         self.curr_row = row
         self.curr_column = col
 
@@ -84,11 +80,12 @@ class Dungeon:
 
 def main():
     d = Dungeon('level1.txt')
-    hero = Hero(name='Luster', title='Dracoslayer')
+    hero = Hero(name='Luster', title='Dracoslayer', health=100, )
     d.spawn(hero)
-    hero.equip(Weapon(damage = 200))
+    hero.equip(Weapon(damage=200))
     d.move_hero('right')
     d.move_hero('down')
+    print(hero.weapon.damage, hero.spell.damage)
     d.move_hero('down')
     d.move_hero('down')
     d.move_hero('right')
