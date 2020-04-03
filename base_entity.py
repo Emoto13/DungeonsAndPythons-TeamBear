@@ -12,7 +12,7 @@ class BaseEntity(ABC, VerificationMixin):
         self.health = health
         self.MAX_HEALTH = health
 
-        self.verify_value(mana)
+        self.verify_number_value(mana)
         self.mana = mana
         self.MAX_MANA = mana
 
@@ -35,7 +35,7 @@ class BaseEntity(ABC, VerificationMixin):
         return self.mana >= self.spell.mana_cost
 
     def take_damage(self, damage_points: int):
-        self.verify_value(damage_points)
+        self.verify_number_value(damage_points)
         self.health -= damage_points
 
         if not self.is_alive():
@@ -44,7 +44,7 @@ class BaseEntity(ABC, VerificationMixin):
     def take_healing(self, healing_points: int) -> bool:
         if self.health == 0:
             return False
-        self.verify_value(healing_points)
+        self.verify_number_value(healing_points)
         self.health += healing_points
         self.health = self.verify_if_more_than_max(self.health, self.MAX_HEALTH)
         return True
@@ -52,7 +52,7 @@ class BaseEntity(ABC, VerificationMixin):
     def take_mana(self, mana_points: int):
         if self.health == 0:
             return False
-        self.verify_value(mana_points)
+        self.verify_number_value(mana_points)
         self.mana += mana_points
         self.mana = self.verify_if_more_than_max(self.mana, self.MAX_MANA)
 

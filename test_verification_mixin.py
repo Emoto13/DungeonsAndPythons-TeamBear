@@ -9,7 +9,7 @@ class TestClassVerificationMixin(unittest.TestCase):
         err = None
 
         try:
-            v.verify_value(-1)
+            v.verify_number_value(-1)
         except Exception as exc:
             err = exc
 
