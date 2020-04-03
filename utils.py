@@ -46,6 +46,7 @@ def fight_enemy(hero):
     while hero.is_alive():
         enemy.take_damage(hero.attack())
         if not enemy.is_alive():
+            del enemy
             break
         hero.take_damage(enemy.attack())
 

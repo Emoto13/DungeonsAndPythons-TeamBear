@@ -1,6 +1,7 @@
 from utils import read_file, add_coordinates, set_coordinates_for_starting_positions, move_is_legal, \
     fight_enemy, collect_treasure, end_game, nothing_happens
 from hero import Hero
+from weapon import Weapon
 
 
 # TODO WRITE SOME TEST SO MARTO DOESN'T COMPLAIN ABOUT IT
@@ -85,8 +86,12 @@ def main():
     d = Dungeon('level1.txt')
     hero = Hero(name='Luster', title='Dracoslayer')
     d.spawn(hero)
+    hero.equip(Weapon(damage = 200))
     d.move_hero('right')
     d.move_hero('down')
+    d.move_hero('down')
+    d.move_hero('down')
+    d.move_hero('right')
     d.print_map()
 
     print(d.curr_row, d.curr_column)
