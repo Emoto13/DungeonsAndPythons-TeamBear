@@ -1,53 +1,52 @@
-from utils import read_file, add_coordinates, set_coordinates_for_starting_positions_and_treasures, move_is_legal, \
+from utils import read_file, add_coordinates, set_coordinates_for_starting_positions, move_is_legal, \
     fight_enemy, collect_treasure, end_game, nothing_happens
 from hero import Hero
 
+
 # TODO WRITE SOME TEST SO MARTO DOESN'T COMPLAIN ABOUT IT
 # TODO UPDATE HERO POSITION ON THE MAP
+# TODO REFACTOR PRIVATE METHODS
+# TODO ADD VERIFICATION FOR NEEDED ATTRIBUTES IN CLASSES
 
 class Dungeon:
 
     def __init__(self, file_path: str = None):
         self.starting_positions = []
-        self.treasures = []
 
         self.dungeon_map = read_file(file_path)
-        self.set_starting_positions_and_treasures()
+        self.__set_starting_positions()
 
         self.curr_row = 0
         self.curr_column = 0
         self.hero = None
 
-    def set_starting_positions_and_treasures(self):
-        dicts = {
-            'S': add_coordinates(self.starting_positions),
-            'T': add_coordinates(self.treasures),
-        }
-
-        set_coordinates_for_starting_positions_and_treasures(self.dungeon_map, dicts)
-
     def spawn(self, hero_instance: Hero = None):
         self.hero = hero_instance
         self.__set_hero_coordinates()
 
-    def __set_hero_coordinates(self):
-        self.curr_row = self.starting_positions[0][0]
-        self.curr_column = self.starting_positions[0][1]
-        del self.starting_positions[0]
-        self.dungeon_map[self.curr_row][self.curr_column] = 'H'
+    def print_map(self):
+        for rows in self.dungeon_map:
+            print(*rows)
 
     def move_hero(self, direction):
-        row,col = self.apply_direction(direction)
+        row, col = self.__apply_direction(direction)
 
         if not move_is_legal(self.dungeon_map, row, col):
             return False
 
-        self.take_action_after_move(row,col)
+        self.__take_action_after_move(row, col)
 
         self.__update_current_row_and_column(row, col)
         return True
 
-    def take_action_after_move(self,row,col):
+    def __set_starting_positions(self):
+        dicts = {
+            'S': add_coordinates(self.starting_positions),
+        }
+
+        set_coordinates_for_starting_positions(self.dungeon_map, dicts)
+
+    def __take_action_after_move(self, row, col): # MOVE
         position = self.dungeon_map[row][col]
         dict_of_actions = {
             'E': fight_enemy,
@@ -58,7 +57,7 @@ class Dungeon:
 
         dict_of_actions[position](self.hero)
 
-    def apply_direction(self,direction):
+    def __apply_direction(self, direction): # MOVE
         dicts = {
             'up': (self.curr_row - 1, self.curr_column),
             'down': (self.curr_row + 1, self.curr_column),
@@ -68,17 +67,18 @@ class Dungeon:
 
         row = dicts[direction][0]
         col = dicts[direction][1]
-        possible_move = [row,col]
 
-        return possible_move
+        return row, col
 
     def __update_current_row_and_column(self, row, col):
         self.curr_row = row
         self.curr_column = col
 
-    def print_map(self):
-        for rows in self.dungeon_map:
-            print(*rows)
+    def __set_hero_coordinates(self):
+        self.curr_row = self.starting_positions[0][0]
+        self.curr_column = self.starting_positions[0][1]
+        del self.starting_positions[0]
+        self.dungeon_map[self.curr_row][self.curr_column] = 'H'
 
 
 def main():

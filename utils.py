@@ -2,6 +2,7 @@ import random
 from names import WEAPON_NAMES, SPELL_NAMES
 from treasures import TYPES_OF_TREASURES
 
+
 def read_file(file_path):
     with open(file_path, 'r') as f:
         content = f.readlines()
@@ -18,10 +19,10 @@ def add_coordinates(lst):
     return add_row_and_col
 
 
-def set_coordinates_for_starting_positions_and_treasures(dungeon_map, dicts):
+def set_coordinates_for_starting_positions(dungeon_map, dicts):
     for row in range(len(dungeon_map)):
         for col in range(len(dungeon_map[row])):
-            if dungeon_map[row][col] == 'S' or dungeon_map[row][col] == 'T':
+            if dungeon_map[row][col] == 'S':
                 dicts[dungeon_map[row][col]](row, col)
 
 
@@ -63,6 +64,7 @@ def generate_random_value_of_treasure(treasure):
     treasure_value = dict_treasure_values[treasure]
 
     return treasure_value
+
 
 def collect_treasure(hero):
     dict_add_treasure = {
