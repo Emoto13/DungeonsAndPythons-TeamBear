@@ -1,44 +1,51 @@
 import random
 from names import WEAPON_NAMES, SPELL_NAMES
 from treasures import TYPES_OF_TREASURES
+from verification_mixin import VerificationMixin
 
 
 def read_file(file_path):
     with open(file_path, 'r') as f:
         content = f.readlines()
-
     dungeon_map = [[char for char in line.strip()] for line in content]
-
     return dungeon_map
 
 
 def add_coordinates(lst):
     def add_row_and_col(row, col):
         lst.append((row, col))
-
     return add_row_and_col
 
 
-def set_coordinates_for_starting_positions(dungeon_map, dicts):
+def set_coordinates_for_starting_positions(dungeon_map, starting_positions):
     for row in range(len(dungeon_map)):
-        for col in range(len(dungeon_map[row])):
-            if dungeon_map[row][col] == 'S':
-                dicts[dungeon_map[row][col]](row, col)
+        if 'S' in dungeon_map[row]:
+            col = dungeon_map[row].index('S')
+            add_coordinates(starting_positions)(row, col)
 
-
-# TODO ILLEGAL MOVE
 
 def move_is_legal(dungeon_map, row, col):
-    if row < 0 or row >= len(dungeon_map):
-        return False
-
-    if col < 0 or col >= len(dungeon_map[row]):
-        return False
+    if row < 0 or col < 0 or row >= len(dungeon_map) or col >= len(dungeon_map[row]):
+        raise ValueError('You cannot go out of the map.')
 
     if dungeon_map[row][col] == '#':
-        return False
+        raise ValueError('There is a wall. You cannot go there.')
 
-    return True
+
+def apply_direction(direction, curr_row, curr_column):
+    dicts = {
+        'up': (curr_row - 1, curr_column),
+        'down': (curr_row + 1, curr_column),
+        'left': (curr_row, curr_column - 1),
+        'right': (curr_row, curr_column + 1)
+    }
+
+    VerificationMixin.verify_command(dicts, direction)
+
+    row = dicts[direction][0]
+    col = dicts[direction][1]
+
+    return row, col
 
 
 def take_action_after_move(hero, position):
@@ -49,20 +56,6 @@ def take_action_after_move(hero, position):
     }
 
     dict_of_actions[position](hero)
-
-
-def apply_direction(direction, curr_row, curr_column):  # MOVE
-    dicts = {
-        'up': (curr_row - 1, curr_column),
-        'down': (curr_row + 1, curr_column),
-        'left': (curr_row, curr_column - 1),
-        'right': (curr_row, curr_column + 1)
-    }
-
-    row = dicts[direction][0]
-    col = dicts[direction][1]
-
-    return row, col
 
 
 def fight_enemy(hero):
@@ -135,8 +128,13 @@ def reached_exit(position):
     return False
 
 
-def end_game(hero):
-    pass
+def end_game(dungeon):
+    row = dungeon.curr_row
+    column = dungeon.curr_column
+    if dungeon.dungeon_map[row][column] == 'G':
+        print('Game over')
+        return True
+    return False
 
 
 def main():
