@@ -42,33 +42,27 @@ def fight_enemy(hero):
     # TODO REFACTOR FOR SPELLS AND SPELL RANGE
     from enemy import Enemy
     enemy = Enemy.spawn_enemy()
-    
     while hero.is_alive():
-        apply_damage(enemy,hero)
+        enemy.take_damage(hero.attack())
         if not enemy.is_alive():
             break
-        apply_damage(hero,enemy)
+        hero.take_damage(enemy.attack())
 
-def apply_damage(entity1, entity2):
-    entity1.take_damage(entity2.attack())
 
-def check_death(entity):
-    return entity.is_alive()
-
-def generate_random_type_of_treasure(treasure):
+def generate_random_value_of_treasure(treasure):
     from weapon import Weapon
     from spell import Spell
 
-    dict_treasure_types = {
+    dict_treasure_values = {
         'health': random.randint(1, 20),
         'mana': random.randint(1, 20),
         'weapon': Weapon.create_weapon(random.choice(WEAPON_NAMES)),
         'spell': Spell.create_spell(random.choice(SPELL_NAMES))
     }
 
-    treasure_type = dict_treasure_types[treasure]
+    treasure_value = dict_treasure_values[treasure]
 
-    return treasure_type
+    return treasure_value
 
 def collect_treasure(hero):
     dict_add_treasure = {
@@ -80,8 +74,8 @@ def collect_treasure(hero):
 
     treasure = random.choice(TYPES_OF_TREASURES)
 
-    treasure_type = generate_random_type_of_treasure(treasure)
-    dict_add_treasure[treasure](treasure_type)
+    treasure_value = generate_random_value_of_treasure(treasure)
+    dict_add_treasure[treasure](treasure_value)
 
     print(f'You collected {treasure}')
 
