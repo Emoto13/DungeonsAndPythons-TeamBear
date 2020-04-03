@@ -1,6 +1,7 @@
 import random
 from verification_mixin import VerificationMixin
 
+
 class Spell(VerificationMixin):
 
     def __init__(self, name: str = 'Spell', damage: int = 0, mana_cost: int = 0, cast_range: int = 0):
