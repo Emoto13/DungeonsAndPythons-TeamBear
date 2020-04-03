@@ -1,11 +1,10 @@
-from utils import read_file, add_coordinates, set_coordinates_for_starting_positions, move_is_legal \
-    , reached_exit, take_action_after_move, apply_direction
+from utils import read_file, add_coordinates, set_coordinates_for_starting_positions, move_is_legal, \
+    reached_exit, take_action_after_move, apply_direction
 from hero import Hero
 from weapon import Weapon
 
 
-# TODO WRITE SOME TEST SO MARTO DOESN'T COMPLAIN ABOUT IT
-# TODO ADD USER CHOICE TO EQUIP AND LEARN
+# TODO ADD USER CHOICE TO EQUIP AND LEARN OPTIONAL
 
 class Dungeon:
 
@@ -17,7 +16,6 @@ class Dungeon:
 
         self.curr_row = 0
         self.curr_column = 0
-        self.hero = None
 
     def spawn(self, hero_instance: Hero = None):
         self.hero = hero_instance
@@ -30,46 +28,52 @@ class Dungeon:
     def move_hero(self, direction):
         row, col = apply_direction(direction, self.curr_row, self.curr_column)
 
-        if not move_is_legal(self.dungeon_map, row, col):
-            return False
+        move_is_legal(self.dungeon_map, row, col)
 
         position = self.dungeon_map[row][col]
-
         if reached_exit(position):
-            return True
+            self.__update_position(row, col)
+            return
 
         take_action_after_move(self.hero, position)
 
         if not self.hero.is_alive():
             self.__respawn_hero()
-            return False
+            return
 
         self.hero.take_mana(self.hero.mana_regeneration_rate)
+        self.__move_hero_on_the_map(row, col)
         self.__update_position(row, col)
-        return True
 
     def __set_starting_positions(self):
-        dicts = {
-            'S': add_coordinates(self.starting_positions),
-        }
-
-        set_coordinates_for_starting_positions(self.dungeon_map, dicts)
+        set_coordinates_for_starting_positions(self.dungeon_map, self.starting_positions)
 
     def __respawn_hero(self):
         if not self.starting_positions:
-            print('Game over')
-            return
+            raise Exception('Game over. No place to respawn.')
+
         hero = Hero(name=self.hero.name, title=self.hero.title,
                     health=self.hero.MAX_HEALTH,
                     mana=self.hero.MAX_MANA,
                     mana_regeneration_rate=self.hero.mana_regeneration_rate)
-        self.spawn(hero)
+
+        row = self.starting_positions[0][0]
+        col = self.starting_positions[0][1]
+
+        self.__move_hero_on_the_map(row, col)
+        self.__set_hero_coordinates()
+        self.__update_position(row, col)
+        self.hero = hero
+
+        print(f'{self.hero.known_as()} has respawn at {self.curr_row} {self.curr_column}')
 
     def __update_position(self, row, col):
-        self.dungeon_map[self.curr_row][self.curr_column] = '.'
-        self.dungeon_map[row][col] = 'H'
         self.curr_row = row
         self.curr_column = col
+
+    def __move_hero_on_the_map(self, row, col):
+        self.dungeon_map[self.curr_row][self.curr_column] = '.'
+        self.dungeon_map[row][col] = 'H'
 
     def __set_hero_coordinates(self):
         self.curr_row = self.starting_positions[0][0]
