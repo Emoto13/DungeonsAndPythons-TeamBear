@@ -2,10 +2,6 @@ from utils import read_file, add_coordinates, set_coordinates_for_starting_posit
     fight_enemy, collect_treasure, end_game, nothing_happens
 from hero import Hero
 
-
-# TODO CREATE FILES WITH CONSTANTS
-# TODO SPLIT FIGHT_ENEMY AND COLLECT_TREASURE TO SMALLER FUNCTIONS
-# TODO REFACTOR MOVE_HERO TO SMALLER FUNCTIONS
 # TODO WRITE SOME TEST SO MARTO DOESN'T COMPLAIN ABOUT IT
 # TODO UPDATE HERO POSITION ON THE MAP
 
@@ -41,19 +37,17 @@ class Dungeon:
         self.dungeon_map[self.curr_row][self.curr_column] = 'H'
 
     def move_hero(self, direction):
-        dicts = {
-            'up': (self.curr_row - 1, self.curr_column),
-            'down': (self.curr_row + 1, self.curr_column),
-            'left': (self.curr_row, self.curr_column - 1),
-            'right': (self.curr_row, self.curr_column + 1)
-        }
-
-        row = dicts[direction][0]
-        col = dicts[direction][1]
+        row,col = self.apply_direction(direction)
 
         if not move_is_legal(self.dungeon_map, row, col):
             return False
 
+        self.take_action_after_move(row,col)
+
+        self.__update_current_row_and_column(row, col)
+        return True
+
+    def take_action_after_move(self,row,col):
         position = self.dungeon_map[row][col]
         dict_of_actions = {
             'E': fight_enemy,
@@ -63,12 +57,28 @@ class Dungeon:
         }
 
         dict_of_actions[position](self.hero)
-        self.__update_current_row_and_column(row, col)
-        return True
+
+    def apply_direction(self,direction):
+        dicts = {
+            'up': (self.curr_row - 1, self.curr_column),
+            'down': (self.curr_row + 1, self.curr_column),
+            'left': (self.curr_row, self.curr_column - 1),
+            'right': (self.curr_row, self.curr_column + 1)
+        }
+
+        row = dicts[direction][0]
+        col = dicts[direction][1]
+        possible_move = [row,col]
+
+        return possible_move
 
     def __update_current_row_and_column(self, row, col):
         self.curr_row = row
         self.curr_column = col
+
+    def print_map(self):
+        for rows in self.dungeon_map:
+            print(*rows)
 
 
 def main():
@@ -77,6 +87,7 @@ def main():
     d.spawn(hero)
     d.move_hero('right')
     d.move_hero('down')
+    d.print_map()
 
     print(d.curr_row, d.curr_column)
     print(hero.spell.damage, hero.weapon.damage)
