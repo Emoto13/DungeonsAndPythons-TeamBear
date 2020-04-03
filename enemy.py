@@ -24,3 +24,6 @@ class Enemy(BaseEntity):
         mana = random.randint(1, 100)
         damage = random.randint(1, 20)
         return cls(health=health, mana=mana, damage=damage)
+
+    def __del__(self):
+        print("Enemy has been slain")
