@@ -26,6 +26,8 @@ def set_coordinates_for_starting_positions(dungeon_map, dicts):
                 dicts[dungeon_map[row][col]](row, col)
 
 
+# TODO ILLEGAL MOVE
+
 def move_is_legal(dungeon_map, row, col):
     if row < 0 or row >= len(dungeon_map):
         return False
@@ -39,16 +41,55 @@ def move_is_legal(dungeon_map, row, col):
     return True
 
 
+def take_action_after_move(hero, position):
+    dict_of_actions = {
+        'E': fight_enemy,
+        'T': collect_treasure,
+        '.': nothing_happens
+    }
+
+    dict_of_actions[position](hero)
+
+
+def apply_direction(direction, curr_row, curr_column):  # MOVE
+    dicts = {
+        'up': (curr_row - 1, curr_column),
+        'down': (curr_row + 1, curr_column),
+        'left': (curr_row, curr_column - 1),
+        'right': (curr_row, curr_column + 1)
+    }
+
+    row = dicts[direction][0]
+    col = dicts[direction][1]
+
+    return row, col
+
+
 def fight_enemy(hero):
-    # TODO REFACTOR FOR SPELLS AND SPELL RANGE
     from enemy import Enemy
     enemy = Enemy.spawn_enemy()
-    while hero.is_alive():
+    attack_with_spell_range(hero, enemy)
+    regular_fight(hero, enemy)
+
+
+def attack_with_spell_range(hero, enemy):
+    spell_attack_counter = 0
+    while hero.can_cast() and spell_attack_counter < hero.spell.cast_range:
+        enemy.take_damage(hero.attack_by('spell'))
+        spell_attack_counter += 1
+
+
+def regular_fight(hero, enemy):
+    while True:
         enemy.take_damage(hero.attack())
         if not enemy.is_alive():
-            del enemy
+            print('Enemy has been slain')
             break
+
         hero.take_damage(enemy.attack())
+        if not hero.is_alive():
+            print(f'{hero.known_as()} has been slain')
+            break
 
 
 def generate_random_value_of_treasure(treasure):
@@ -84,7 +125,14 @@ def collect_treasure(hero):
 
 
 def nothing_happens(hero):
-    print(f'Nothing happened with hero {hero.name} the {hero.title}')
+    print(f'Nothing happened with hero {hero.known_as()}')
+
+
+def reached_exit(position):
+    if position == 'G':
+        print("You've successfully reached the exit!")
+        return True
+    return False
 
 
 def end_game(hero):
