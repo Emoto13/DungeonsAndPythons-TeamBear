@@ -1,3 +1,7 @@
+import random
+from names import WEAPON_NAMES, SPELL_NAMES
+from treasures import TYPES_OF_TREASURES
+
 def read_file(file_path):
     with open(file_path, 'r') as f:
         content = f.readlines()
@@ -38,29 +42,35 @@ def fight_enemy(hero):
     # TODO REFACTOR FOR SPELLS AND SPELL RANGE
     from enemy import Enemy
     enemy = Enemy.spawn_enemy()
+    
     while hero.is_alive():
-        enemy.take_damage(hero.attack())
+        apply_damage(enemy,hero)
         if not enemy.is_alive():
             break
-        hero.take_damage(enemy.attack())
+        apply_damage(hero,enemy)
 
+def apply_damage(entity1, entity2):
+    entity1.take_damage(entity2.attack())
 
-def collect_treasure(hero):
-    import random
+def check_death(entity):
+    return entity.is_alive()
+
+def generate_random_type_of_treasure(treasure):
     from weapon import Weapon
     from spell import Spell
 
-    types_treasure = ('health', 'mana', 'weapon', 'spell')
-    weapon_names = ('Sword', 'Hammer', 'Mace', 'Boomerang', 'Shuriken', 'Blade', 'Knifes', 'Dildo')
-    spell_names = ('Avada Kedavra', 'Expecto Patronum', 'Abra Kadabra', 'Crucio', 'Accio', 'Wingardium Leviosa')
-
-    dict_treasure_values = {
+    dict_treasure_types = {
         'health': random.randint(1, 20),
         'mana': random.randint(1, 20),
-        'weapon': Weapon.create_weapon(random.choice(weapon_names)),
-        'spell': Spell.create_spell(random.choice(spell_names))
+        'weapon': Weapon.create_weapon(random.choice(WEAPON_NAMES)),
+        'spell': Spell.create_spell(random.choice(SPELL_NAMES))
     }
 
+    treasure_type = dict_treasure_types[treasure]
+
+    return treasure_type
+
+def collect_treasure(hero):
     dict_add_treasure = {
         'health': hero.take_healing,
         'mana': hero.take_mana,
@@ -68,10 +78,11 @@ def collect_treasure(hero):
         'spell': hero.learn
     }
 
-    treasure = random.choice(types_treasure)
-    treasure_type = dict_treasure_values[treasure]
+    treasure = random.choice(TYPES_OF_TREASURES)
 
+    treasure_type = generate_random_type_of_treasure(treasure)
     dict_add_treasure[treasure](treasure_type)
+
     print(f'You collected {treasure}')
 
 
