@@ -4,6 +4,8 @@ from weapon import Weapon
 from spell import Spell
 
 
+# TODO REFACTOR EQUIP AND LEARN
+
 class BaseEntity(ABC, VerificationMixin):
     def __init__(self, health: int = 1, mana: int = 0):
         self.verify_health(health)

@@ -2,6 +2,8 @@ from base_entity import BaseEntity
 import random
 
 
+# TODO ADD WEAPONS AND SPELLS TO ENEMY
+
 class Enemy(BaseEntity):
     def __init__(self, health: int = 1, mana: int = 0, damage: int = 0):
         super().__init__(health, mana)
