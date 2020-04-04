@@ -20,12 +20,14 @@ class Hero(BaseEntity, VerificationMixin):
     def known_as(self):
         return f'{self.name} the {self.title}'
 
-    def attack(self) -> float:
+    def attack(self):
         spell_is_more_powerful = self.spell.damage >= self.weapon.damage
 
-        if not spell_is_more_powerful and self.can_cast():
+        if spell_is_more_powerful and self.can_cast():
             self.reduce_mana()
+            print(f'{self.name} casts {self.spell.name} dealing {self.spell.damage} damage')
             return self.spell.damage
+        print(f'{self.name} attacks with {self.weapon.name} dealing {self.weapon.damage} damage')
         return self.weapon.damage
 
     def attack_by(self, by='spell'):
@@ -36,10 +38,31 @@ class Hero(BaseEntity, VerificationMixin):
         if by == 'spell':
             self.reduce_mana()
 
+        print(f'{self.name} casts {self.spell.name} dealing {self.spell.damage} damage')
+
         return dicts[by]
+
+    def display_hero_information(self):
+        # add spaces constant for fprints
+        print(
+            f'{self.name} the {self.title}\n\n'
+            f'current helth: {self.health}\n'
+            f'current mana: {self.mana}\n'
+            f'mana regeneration: {self.mana_regeneration_rate}\n\n'
+            f'current Weapon:\n'
+            f'      Name: {self.weapon.name}\n'
+            f'      Damage: {self.weapon.damage}\n\n'
+            f'current Spell:\n'
+            f'      Name: {self.spell.name}\n'
+            f'      Damage: {self.spell.damage}\n'
+            f'      Mana Cost: {self.spell.mana_cost}\n'
+            f'      Range: {self.spell.cast_range}'
+        )
+        input('\nPress Enter to continue... ')
 
     @classmethod
     def create_hero(cls):
+        # add except
         name = input('Hero name: ')
         title = input('Hero title: ')
         health = int(input('Hero health: '))
