@@ -1,10 +1,9 @@
-from utils import read_file, add_coordinates, set_coordinates_for_starting_positions, move_is_legal, \
+from utils import read_file, set_coordinates_for_starting_positions, move_is_legal, \
     reached_exit, take_action_after_move, apply_direction
 from hero import Hero
 from weapon import Weapon
+from spell import Spell
 
-
-# TODO ADD USER CHOICE TO EQUIP AND LEARN OPTIONAL
 
 class Dungeon:
 
@@ -52,10 +51,12 @@ class Dungeon:
         if not self.starting_positions:
             raise Exception('Game over. No place to respawn.')
 
-        hero = Hero(name=self.hero.name, title=self.hero.title,
-                    health=self.hero.MAX_HEALTH,
-                    mana=self.hero.MAX_MANA,
-                    mana_regeneration_rate=self.hero.mana_regeneration_rate)
+        # TODO Add func reset attributes to utils
+
+        self.hero.health = self.hero.MAX_HEALTH
+        self.hero.mana = self.hero.MAX_MANA
+        self.hero.weapon = Weapon()
+        self.hero.spell = Spell()
 
         row = self.starting_positions[0][0]
         col = self.starting_positions[0][1]
@@ -63,7 +64,6 @@ class Dungeon:
         self.__move_hero_on_the_map(row, col)
         self.__set_hero_coordinates()
         self.__update_position(row, col)
-        self.hero = hero
 
         print(f'{self.hero.known_as()} has respawn at {self.curr_row} {self.curr_column}')
 
