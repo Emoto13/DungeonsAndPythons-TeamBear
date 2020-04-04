@@ -6,7 +6,8 @@ WEAPON_NAMES = ('Sword',
                 'Blade',
                 'Knifes',
                 'Spear',
-                'Katana'
+                'Katana',
+                'Pickaxe'
                 )
 
 SPELL_NAMES = ('Avada Kedavra',
@@ -16,4 +17,6 @@ SPELL_NAMES = ('Avada Kedavra',
                'Accio',
                'Wingardium Leviosa',
                'Alarte Ascendare',
+               'Omnia Lux'
+               'Ignis Pila'
                )
