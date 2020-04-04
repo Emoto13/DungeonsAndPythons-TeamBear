@@ -1,7 +1,43 @@
 import random
+import os
 from names import WEAPON_NAMES, SPELL_NAMES
 from treasures import TYPES_OF_TREASURES
 from verification_mixin import VerificationMixin
+
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def is_direction(choice):
+    directions = ('up', 'down', 'left', 'right')
+
+    return choice in directions
+
+
+def display_help():
+    clear_screen()
+    with open('help.txt', 'r') as fp:
+        print(fp.read())
+    input('\nPress Enter to continue... ')
+
+
+def check_choice(choice, dungeon, hero):
+
+    if is_direction(choice):
+        dungeon.move_hero(choice)
+        return
+
+    clear_screen()
+    dicts = {
+        'help': display_help,
+        'character_info': hero.display_hero_information
+    }
+
+    dicts[choice]()
+
+# from here up to top maybe should move those to another file
+# crate display mixin to hold all display shits
 
 
 def read_file(file_path):
@@ -26,10 +62,13 @@ def set_coordinates_for_starting_positions(dungeon_map, starting_positions):
 
 def move_is_legal(dungeon_map, row, col):
     if row < 0 or col < 0 or row >= len(dungeon_map) or col >= len(dungeon_map[row]):
-        raise ValueError('You cannot go out of the map.')
+        raise ValueError('\nYou cannot go out of the map.')
 
     if dungeon_map[row][col] == '#':
-        raise ValueError('There is a wall. You cannot go there.')
+        raise ValueError('\nThere is a wall. You cannot go there.')
+
+    if dungeon_map[row][col] == 'S':
+        raise ValueError('\nYou cannot enter the Spawn Zone')
 
 
 def apply_direction(direction, curr_row, curr_column):
@@ -63,6 +102,7 @@ def fight_enemy(hero):
     enemy = Enemy.spawn_enemy()
     attack_with_spell_range(hero, enemy)
     regular_fight(hero, enemy)
+    input('\nPress Enter to continue... ')
 
 
 def attack_with_spell_range(hero, enemy):
@@ -71,15 +111,25 @@ def attack_with_spell_range(hero, enemy):
         enemy.take_damage(hero.attack_by('spell'))
         spell_attack_counter += 1
 
+        print(f'Enemy health: {enemy.health}')
+        if not enemy.is_alive():
+            print('Enemy has been slain')
+            break
+
+        print(f'Enemy moves closer!')
+
 
 def regular_fight(hero, enemy):
     while True:
         enemy.take_damage(hero.attack())
+        print(f'Enemy health: {enemy.health}')
         if not enemy.is_alive():
             print('Enemy has been slain')
             break
 
         hero.take_damage(enemy.attack())
+        print(f'Enemy attacks dealing {enemy.damage} damage to {hero.name}')
+        print(f'{hero.name} health: {hero.health}')
         if not hero.is_alive():
             print(f'{hero.known_as()} has been slain')
             break
@@ -114,7 +164,8 @@ def collect_treasure(hero):
     treasure_value = generate_random_value_of_treasure(treasure)
     dict_add_treasure[treasure](treasure_value)
 
-    print(f'You collected {treasure}')
+    print(f'\nYou collected {treasure}')
+    input('\nPress Enter to continue... ')
 
 
 def nothing_happens(hero):
@@ -132,7 +183,8 @@ def end_game(dungeon):
     row = dungeon.curr_row
     column = dungeon.curr_column
     if dungeon.dungeon_map[row][column] == 'G':
-        print('Game over')
+        # dungeon.print_map()
+        input('Game over, you won!\n\nPress Enter to leave')
         return True
     return False
 
