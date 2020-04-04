@@ -4,8 +4,6 @@ from weapon import Weapon
 from spell import Spell
 
 
-# TODO REFACTOR EQUIP AND LEARN
-
 class BaseEntity(ABC, VerificationMixin):
     def __init__(self, health: int = 1, mana: int = 0):
         self.verify_health(health)
@@ -59,11 +57,27 @@ class BaseEntity(ABC, VerificationMixin):
     def reduce_mana(self):
         self.mana -= self.spell.mana_cost
 
+    # TODO Add helper file/package for print and format
+
     def equip(self, weapon: Weapon = None):
-        self.weapon = weapon
+        print(f'\nYour weapon [name,damage]: [{self.weapon.name}, {self.weapon.damage}]')
+        print(f'New weapon [name,damage]: [{weapon.name}, {weapon.damage}]')
+        choice = input('Do you want to equip this weapon? (yes/no) ')
+        if choice == 'yes':
+            self.weapon = weapon
 
     def learn(self, spell: Spell = None):
-        self.spell = spell
+        print(
+            f'\nYour spell [name,mana_cost,damage,range]:'
+            f'[{self.spell.name}, {self.spell.damage}, {self.spell.mana_cost}, {self.spell.cast_range}]'
+        )
+        print(
+            f'New spell [name,mana_cost,damage,range]:'
+            f' [{spell.name}, {spell.damage}, {spell.mana_cost}, {spell.cast_range}]'
+        )
+        choice = input('Do you want to equip this spell? (yes/no) ')
+        if choice == 'yes':
+            self.spell = spell
 
     @abstractmethod
     def attack(self):
