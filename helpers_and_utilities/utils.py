@@ -1,6 +1,3 @@
-from helpers_and_utilities.display_info import DisplayInfo
-
-
 def clear_screen():
     print("\033c", end="")
 
@@ -11,6 +8,7 @@ def is_direction(choice):
 
 
 def check_choice(choice, dungeon):
+    from helpers_and_utilities.display_info import DisplayInfo
     if is_direction(choice):
         dungeon.move_hero(choice)
         return
