@@ -1,43 +1,21 @@
 import random
-import os
 from names import WEAPON_NAMES, SPELL_NAMES
 from treasures import TYPES_OF_TREASURES
 from verification_mixin import VerificationMixin
+from print_helpers import print_hero_takes_damage, print_collect_treasure, print_has_been_slain,\
+    print_entity_name_and_health
 
 
-def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-
-def is_direction(choice):
-    directions = ('up', 'down', 'left', 'right')
-
-    return choice in directions
-
-
-def display_help():
-    clear_screen()
-    with open('help.txt', 'r') as fp:
-        print(fp.read())
-    input('\nPress Enter to continue... ')
-
-
-def check_choice(choice, dungeon, hero):
-
-    if is_direction(choice):
-        dungeon.move_hero(choice)
-        return
-
-    clear_screen()
-    dicts = {
-        'help': display_help,
-        'character_info': hero.display_hero_information
-    }
-
-    dicts[choice]()
-
-# from here up to top maybe should move those to another file
-# crate display mixin to hold all display shits
+__all__ = ['read_file',
+           'set_coordinates_for_starting_positions',
+           'move_is_legal',
+           'apply_direction',
+           'take_action_after_move',
+           'fight_enemy',
+           'reset_hero_attributes',
+           'collect_treasure',
+           'reached_exit'
+           ]
 
 
 def read_file(file_path):
@@ -88,10 +66,12 @@ def apply_direction(direction, curr_row, curr_column):
 
 
 def take_action_after_move(hero, position):
+    if position == '.':
+        return
+
     dict_of_actions = {
         'E': fight_enemy,
         'T': collect_treasure,
-        '.': nothing_happens
     }
 
     dict_of_actions[position](hero)
@@ -107,31 +87,34 @@ def fight_enemy(hero):
 
 def attack_with_spell_range(hero, enemy):
     spell_attack_counter = 0
+
     while hero.can_cast() and spell_attack_counter < hero.spell.cast_range:
-        enemy.take_damage(hero.attack_by('spell'))
+
+        enemy.take_damage(hero.attack_by_spell())
         spell_attack_counter += 1
 
-        print(f'Enemy health: {enemy.health}')
+        print_entity_name_and_health('Enemy', enemy.health)
         if not enemy.is_alive():
-            print('Enemy has been slain')
+            print_has_been_slain('Enemy')
             break
-
         print(f'Enemy moves closer!')
 
 
 def regular_fight(hero, enemy):
     while True:
         enemy.take_damage(hero.attack())
-        print(f'Enemy health: {enemy.health}')
+        print_entity_name_and_health('Enemy', enemy.health)
+
         if not enemy.is_alive():
-            print('Enemy has been slain')
+            print_has_been_slain('Enemy')
             break
 
         hero.take_damage(enemy.attack())
-        print(f'Enemy attacks dealing {enemy.damage} damage to {hero.name}')
-        print(f'{hero.name} health: {hero.health}')
+        print_hero_takes_damage(hero, enemy)
+        print_entity_name_and_health(hero.name, hero.health)
+
         if not hero.is_alive():
-            print(f'{hero.known_as()} has been slain')
+            print_has_been_slain(hero.known_as())
             break
 
 
@@ -147,7 +130,6 @@ def generate_random_value_of_treasure(treasure):
     }
 
     treasure_value = dict_treasure_values[treasure]
-
     return treasure_value
 
 
@@ -160,16 +142,19 @@ def collect_treasure(hero):
     }
 
     treasure = random.choice(TYPES_OF_TREASURES)
-
     treasure_value = generate_random_value_of_treasure(treasure)
+
     dict_add_treasure[treasure](treasure_value)
-
-    print(f'\nYou collected {treasure}')
-    input('\nPress Enter to continue... ')
+    print_collect_treasure(treasure)
 
 
-def nothing_happens(hero):
-    print(f'Nothing happened with hero {hero.known_as()}')
+def reset_hero_attributes(hero):
+    from weapon import Weapon
+    from spell import Spell
+    hero.health = hero.MAX_HEALTH
+    hero.mana = hero.MAX_MANA
+    hero.weapon = Weapon.create_weapon(random.choice(WEAPON_NAMES))
+    hero.spell = Spell.create_spell(random.choice(SPELL_NAMES))
 
 
 def reached_exit(position):
@@ -177,21 +162,3 @@ def reached_exit(position):
         print("You've successfully reached the exit!")
         return True
     return False
-
-
-def end_game(dungeon):
-    row = dungeon.curr_row
-    column = dungeon.curr_column
-    if dungeon.dungeon_map[row][column] == 'G':
-        # dungeon.print_map()
-        input('Game over, you won!\n\nPress Enter to leave')
-        return True
-    return False
-
-
-def main():
-    print(move_is_legal([[1, 2]], 0, 1))
-
-
-if __name__ == '__main__':
-    main()
