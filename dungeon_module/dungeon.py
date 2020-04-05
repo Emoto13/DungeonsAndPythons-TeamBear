@@ -1,5 +1,6 @@
 from dungeon_module.dungeon_helpers import *
 from entities.hero import Hero
+from helpers_and_utilities.utils import clear_screen
 
 
 class Dungeon:
@@ -46,6 +47,7 @@ class Dungeon:
 
     def __respawn_hero(self):
         if not self.starting_positions:
+            clear_screen()
             raise Exception('Game over. No place to respawn.')
 
         reset_hero_attributes(self.hero)
