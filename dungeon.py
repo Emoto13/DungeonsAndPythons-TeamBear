@@ -1,8 +1,5 @@
-from utils import read_file, set_coordinates_for_starting_positions, move_is_legal, \
-    reached_exit, take_action_after_move, apply_direction
+from dungeon_helpers import *
 from hero import Hero
-from weapon import Weapon
-from spell import Spell
 
 
 class Dungeon:
@@ -51,12 +48,7 @@ class Dungeon:
         if not self.starting_positions:
             raise Exception('Game over. No place to respawn.')
 
-        # TODO Add func reset attributes to utils
-
-        self.hero.health = self.hero.MAX_HEALTH
-        self.hero.mana = self.hero.MAX_MANA
-        self.hero.weapon = Weapon()
-        self.hero.spell = Spell()
+        reset_hero_attributes(self.hero)
 
         row = self.starting_positions[0][0]
         col = self.starting_positions[0][1]
@@ -80,24 +72,3 @@ class Dungeon:
         self.curr_column = self.starting_positions[0][1]
         del self.starting_positions[0]
         self.dungeon_map[self.curr_row][self.curr_column] = 'H'
-
-
-def main():
-    d = Dungeon('level1.txt')
-    hero = Hero(name='Luster', title='Dracoslayer', health=100, )
-    d.spawn(hero)
-    hero.equip(Weapon(damage=200))
-    d.move_hero('right')
-    d.move_hero('down')
-    print(hero.weapon.damage, hero.spell.damage)
-    d.move_hero('down')
-    d.move_hero('down')
-    d.move_hero('right')
-    d.print_map()
-
-    print(d.curr_row, d.curr_column)
-    print(hero.spell.damage, hero.weapon.damage)
-
-
-if __name__ == '__main__':
-    main()
