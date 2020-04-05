@@ -1,13 +1,13 @@
-from hero import Hero
-from dungeon import Dungeon
-from key_input import get_key_input
-from utils import clear_screen, end_game, check_choice
-from print_helpers import print_ask_direction
+from entities.hero import Hero
+from dungeon_module.dungeon import Dungeon
+from helpers_and_utilities.key_input import get_key_input
+from helpers_and_utilities.utils import clear_screen, end_game, check_choice
+from helpers_and_utilities.print_helpers import print_ask_direction
 
 
 def main():
     hero = Hero.create_hero()
-    dungeon = Dungeon('level1.txt')
+    dungeon = Dungeon('dungeon_module/level1.txt')
     dungeon.spawn(hero)
     # TODO add metohd for starting info
     clear_screen()

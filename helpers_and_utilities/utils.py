@@ -1,4 +1,4 @@
-from display_info import DisplayInfo
+from helpers_and_utilities.display_info import DisplayInfo
 
 
 def clear_screen():

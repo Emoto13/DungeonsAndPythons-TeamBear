@@ -1,11 +1,11 @@
 import random
 
-from base_entity import BaseEntity
-from verification_mixin import VerificationMixin
-from weapon import Weapon
-from spell import Spell
-from print_helpers import print_attack
-from names import WEAPON_NAMES, SPELL_NAMES
+from entities.base_entity import BaseEntity
+from helpers_and_utilities.verification_mixin import VerificationMixin
+from items.weapon import Weapon
+from items.spell import Spell
+from helpers_and_utilities.print_helpers import print_attack
+from constants.names import WEAPON_NAMES, SPELL_NAMES
 
 
 class Hero(BaseEntity, VerificationMixin):

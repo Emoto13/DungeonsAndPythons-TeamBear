@@ -1,7 +1,7 @@
 import sys
 import tty
 import termios
-from verification_mixin import VerificationMixin
+from helpers_and_utilities.verification_mixin import VerificationMixin
 
 
 class _Getch:

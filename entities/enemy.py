@@ -1,6 +1,6 @@
-from base_entity import BaseEntity
+from entities.base_entity import BaseEntity
 import random
-from verification_mixin import VerificationMixin
+from helpers_and_utilities.verification_mixin import VerificationMixin
 
 
 # TODO ADD WEAPONS AND SPELLS TO ENEMY

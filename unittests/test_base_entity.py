@@ -1,7 +1,7 @@
 import unittest
-from base_entity import BaseEntity
-from weapon import Weapon
-from spell import Spell
+from entities.base_entity import BaseEntity
+from items.weapon import Weapon
+from items.spell import Spell
 
 
 class Skeleton(BaseEntity):

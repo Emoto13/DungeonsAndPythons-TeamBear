@@ -1,5 +1,5 @@
 import unittest 
-from weapon import Weapon
+from items.weapon import Weapon
 
 
 class TestWeaponClass(unittest.TestCase):

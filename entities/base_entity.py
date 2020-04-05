@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from verification_mixin import VerificationMixin
-from weapon import Weapon
-from spell import Spell
+from helpers_and_utilities.verification_mixin import VerificationMixin
+from items.weapon import Weapon
+from items.spell import Spell
 
 
 class BaseEntity(ABC, VerificationMixin):

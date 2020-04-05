@@ -1,8 +1,8 @@
 import random
-from names import WEAPON_NAMES, SPELL_NAMES
-from treasures import TYPES_OF_TREASURES
-from verification_mixin import VerificationMixin
-from print_helpers import print_hero_takes_damage, print_collect_treasure, print_has_been_slain,\
+from constants.names import WEAPON_NAMES, SPELL_NAMES
+from constants.treasures import TYPES_OF_TREASURES
+from helpers_and_utilities.verification_mixin import VerificationMixin
+from helpers_and_utilities.print_helpers import print_hero_takes_damage, print_collect_treasure, print_has_been_slain,\
     print_entity_name_and_health
 
 
@@ -78,7 +78,7 @@ def take_action_after_move(hero, position):
 
 
 def fight_enemy(hero):
-    from enemy import Enemy
+    from entities.enemy import Enemy
     enemy = Enemy.spawn_enemy()
     attack_with_spell_range(hero, enemy)
     regular_fight(hero, enemy)
@@ -119,8 +119,8 @@ def regular_fight(hero, enemy):
 
 
 def generate_random_value_of_treasure(treasure):
-    from weapon import Weapon
-    from spell import Spell
+    from items.weapon import Weapon
+    from items.spell import Spell
 
     dict_treasure_values = {
         'health': random.randint(1, 20),
@@ -149,8 +149,8 @@ def collect_treasure(hero):
 
 
 def reset_hero_attributes(hero):
-    from weapon import Weapon
-    from spell import Spell
+    from items.weapon import Weapon
+    from items.spell import Spell
     hero.health = hero.MAX_HEALTH
     hero.mana = hero.MAX_MANA
     hero.weapon = Weapon.create_weapon(random.choice(WEAPON_NAMES))

@@ -1,5 +1,5 @@
-from dungeon_helpers import *
-from hero import Hero
+from dungeon_module.dungeon_helpers import *
+from entities.hero import Hero
 
 
 class Dungeon:

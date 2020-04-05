@@ -4,7 +4,7 @@ class DisplayInfo:
 
     def display_info(self, info_type):
         dicts = {'character_info': self.display_hero_information,
-                 'help': DisplayInfo.display_help
+                 'help': self.display_help
                  }
 
         dicts[info_type]()
@@ -28,7 +28,7 @@ class DisplayInfo:
         input('\nPress Enter to continue... ')
 
     def display_help(self):
-        from utils import clear_screen
+        from helpers_and_utilities.utils import clear_screen
         clear_screen()
         with open('help.txt', 'r') as fp:
             print(fp.read())
