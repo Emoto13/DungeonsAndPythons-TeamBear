@@ -1,3 +1,6 @@
+from helpers_and_utilities.utils import clear_screen
+
+
 class DisplayInfo:
     def __init__(self, hero):
         self.hero = hero
@@ -13,7 +16,7 @@ class DisplayInfo:
         FORMAT_SPACES = '      '
         print(
             f'{self.hero.name} the {self.hero.title}\n\n'
-            f'current helth: {self.hero.health}\n'
+            f'current health: {self.hero.health}\n'
             f'current mana: {self.hero.mana}\n'
             f'mana regeneration: {self.hero.mana_regeneration_rate}\n\n'
             f'current Weapon:\n'
@@ -28,11 +31,16 @@ class DisplayInfo:
         input('\nPress Enter to continue... ')
 
     def display_help(self):
-        from helpers_and_utilities.utils import clear_screen
         clear_screen()
         with open('help.txt', 'r') as fp:
             print(fp.read())
         input('\nPress Enter to continue... ')
 
-    # TODO ADD DISPLAY STARTING
-    #  METHOD TO DISPLAY RULES AND MECHANICS
+    @staticmethod
+    def display_intro():
+        clear_screen()
+        with open('intro.txt', 'r') as fp:
+            print(fp.read())
+        input('\nPress Enter to continue... ')
+
+    # TODO ADD DISPLAY LORE AND OTHER SHIT
