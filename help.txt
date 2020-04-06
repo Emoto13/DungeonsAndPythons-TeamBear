@@ -1,3 +1,4 @@
+==================================================
 How to play the game:
 
 1.Use arrow keys to move your character on the map
@@ -6,6 +7,7 @@ How to play the game:
 
 'h' - will display the help message
 'c' - will display info about your character
-'l' - will display legend of map
-'t' - will display dungeon tale
+'k' - will display map keys
+'l' - will display dungeon lore
 'p' - will display credits
+==================================================
