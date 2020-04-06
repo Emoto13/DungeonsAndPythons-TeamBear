@@ -57,8 +57,6 @@ class BaseEntity(ABC, VerificationMixin):
     def reduce_mana(self):
         self.mana -= self.spell.mana_cost
 
-    # TODO Add helper file/package for print and format
-
     def equip(self, weapon: Weapon = None):
         print(f'\nYour weapon [name,damage]: [{self.weapon.name}, {self.weapon.damage}]')
         print(f'New weapon [name,damage]: [{weapon.name}, {weapon.damage}]')
