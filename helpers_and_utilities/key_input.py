@@ -18,11 +18,7 @@ class _Getch:
 
 def check_arrow_key(key, get_key):
     if key == '\x1b':
-        new_key = key
-        key = get_key()
-        new_key += key
-        key = get_key()
-        new_key += key
+        new_key = f'{key}{get_key()}{get_key()}'
         return new_key
     return key
 
@@ -42,7 +38,10 @@ def get_key_input():
         'a': 'left',
         'd': 'right',
         'h': 'help',
-        'c': 'character_info'
+        'c': 'character_info',
+        'l': 'lore',
+        'k': 'map_keys',
+        'p': 'credits'
     }
 
     VerificationMixin.verify_command(dicts, key_combination)
