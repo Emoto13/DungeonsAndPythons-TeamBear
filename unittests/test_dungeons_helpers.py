@@ -1,12 +1,12 @@
 import unittest
 import sys
+sys.path.append('..')
+
 
 from entities.enemy import Enemy
 from entities.hero import Hero
 from items.spell import Spell
 from items.weapon import Weapon
-
-sys.path.append('.')
 from dungeon_module.dungeon_helpers import read_file, add_coordinates, \
     set_coordinates_for_starting_positions, move_is_legal, attack_with_spell_range, regular_fight, \
     reset_hero_attributes, reached_exit

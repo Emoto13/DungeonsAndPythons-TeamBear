@@ -1,7 +1,7 @@
 import unittest
 import sys
 
-sys.path.append('.')
+sys.path.append('..')
 
 from helpers_and_utilities.verification_mixin import VerificationMixin
 

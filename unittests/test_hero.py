@@ -1,7 +1,7 @@
 import unittest
 import sys
 
-sys.path.append('.')
+sys.path.append('..')
 
 from entities.hero import Hero
 from items.spell import Spell

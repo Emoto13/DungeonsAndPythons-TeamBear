@@ -1,7 +1,7 @@
 import unittest
 import sys
 
-sys.path.append('.')
+sys.path.append('..')
 from dungeon_module.dungeon import Dungeon
 from entities.hero import Hero
 

@@ -1,8 +1,7 @@
 import unittest
 import sys
-from unittest.mock import patch
 
-sys.path.append('.')
+sys.path.append('..')
 
 from entities.base_entity import BaseEntity
 from items.weapon import Weapon
@@ -11,14 +10,13 @@ from items.spell import Spell
 
 class Skeleton(BaseEntity):
 
-    def attack():
+    def attack(self):
         pass
 
 
 class TestBaseEntity(unittest.TestCase):
 
-    def test_if_class_can_be_inherted_correctly(self):
-
+    def test_if_class_can_be_inherited_correctly(self):
         self.assertTrue(issubclass(Skeleton, BaseEntity))
 
     def test_if_constructor_sets_attributes_correctly(self):
