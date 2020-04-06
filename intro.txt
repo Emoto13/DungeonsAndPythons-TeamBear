@@ -9,7 +9,7 @@ with the goal to reach the exit gate (G) alive.
 Walking its halls (.) you will stumble 
 upon useful treasures (T) that will aid you 
 throughout your adventure.
-And don`t worry you won`t be lonely inside.
+And don't worry you won't be lonely inside.
 Behind every thick wall (#) lurks an enemy (E)
 trying to stop you from escaping.
 
