@@ -28,6 +28,7 @@ class Dungeon:
         move_is_legal(self.dungeon_map, row, col)
 
         position = self.dungeon_map[row][col]
+
         if reached_exit(position):
             self.__update_position(row, col)
             return
@@ -44,6 +45,8 @@ class Dungeon:
 
     def __set_starting_positions(self):
         set_coordinates_for_starting_positions(self.dungeon_map, self.starting_positions)
+        if not self.starting_positions:
+            raise ValueError('Invalid map. No place to spawn.')
 
     def __respawn_hero(self):
         if not self.starting_positions:

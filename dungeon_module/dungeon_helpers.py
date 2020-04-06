@@ -1,10 +1,11 @@
 import random
 from constants.names import WEAPON_NAMES, SPELL_NAMES
 from constants.treasures import TYPES_OF_TREASURES
+from entities.enemy import Enemy
+from entities.hero import Hero
 from helpers_and_utilities.verification_mixin import VerificationMixin
-from helpers_and_utilities.print_helpers import print_hero_takes_damage, print_collect_treasure, print_has_been_slain,\
+from helpers_and_utilities.print_helpers import print_hero_takes_damage, print_collect_treasure, print_has_been_slain, \
     print_entity_name_and_health
-
 
 __all__ = ['read_file',
            'set_coordinates_for_starting_positions',
@@ -18,27 +19,28 @@ __all__ = ['read_file',
            ]
 
 
-def read_file(file_path):
+def read_file(file_path: str):
     with open(file_path, 'r') as f:
         content = f.readlines()
     dungeon_map = [[char for char in line.strip()] for line in content]
     return dungeon_map
 
 
-def add_coordinates(lst):
-    def add_row_and_col(row, col):
+def add_coordinates(lst: list):
+    def add_row_and_col(row: int, col: int):
         lst.append((row, col))
+
     return add_row_and_col
 
 
-def set_coordinates_for_starting_positions(dungeon_map, starting_positions):
+def set_coordinates_for_starting_positions(dungeon_map: list, starting_positions: list):
     for row in range(len(dungeon_map)):
-        if 'S' in dungeon_map[row]:
-            col = dungeon_map[row].index('S')
-            add_coordinates(starting_positions)(row, col)
+        for col in range(len(dungeon_map[row])):
+            if dungeon_map[row][col] == 'S':
+                add_coordinates(starting_positions)(row, col)
 
 
-def move_is_legal(dungeon_map, row, col):
+def move_is_legal(dungeon_map: list, row: int, col: int):
     if row < 0 or col < 0 or row >= len(dungeon_map) or col >= len(dungeon_map[row]):
         raise ValueError('\nYou cannot go out of the map.')
 
@@ -49,7 +51,7 @@ def move_is_legal(dungeon_map, row, col):
         raise ValueError('\nYou cannot enter the Spawn Zone')
 
 
-def apply_direction(direction, curr_row, curr_column):
+def apply_direction(direction: str, curr_row: int, curr_column: int):
     dicts = {
         'up': (curr_row - 1, curr_column),
         'down': (curr_row + 1, curr_column),
@@ -65,7 +67,7 @@ def apply_direction(direction, curr_row, curr_column):
     return row, col
 
 
-def take_action_after_move(hero, position):
+def take_action_after_move(hero: Hero, position: str):
     if position == '.':
         return
 
@@ -77,7 +79,7 @@ def take_action_after_move(hero, position):
     dict_of_actions[position](hero)
 
 
-def fight_enemy(hero):
+def fight_enemy(hero: Hero):
     from entities.enemy import Enemy
     enemy = Enemy.spawn_enemy()
     attack_with_spell_range(hero, enemy)
@@ -85,7 +87,7 @@ def fight_enemy(hero):
     input('\nPress Enter to continue... ')
 
 
-def attack_with_spell_range(hero, enemy):
+def attack_with_spell_range(hero: Hero, enemy: Enemy):
     spell_attack_counter = 0
 
     while hero.can_cast() and spell_attack_counter < hero.spell.cast_range:
@@ -100,7 +102,7 @@ def attack_with_spell_range(hero, enemy):
         print(f'Enemy moves closer!')
 
 
-def regular_fight(hero, enemy):
+def regular_fight(hero: Hero, enemy: Enemy):
     while True:
         enemy.take_damage(hero.attack())
         print_entity_name_and_health('Enemy', enemy.health)
@@ -118,22 +120,7 @@ def regular_fight(hero, enemy):
             break
 
 
-def generate_random_value_of_treasure(treasure):
-    from items.weapon import Weapon
-    from items.spell import Spell
-
-    dict_treasure_values = {
-        'health': random.randint(1, 20),
-        'mana': random.randint(1, 20),
-        'weapon': Weapon.create_weapon(random.choice(WEAPON_NAMES)),
-        'spell': Spell.create_spell(random.choice(SPELL_NAMES))
-    }
-
-    treasure_value = dict_treasure_values[treasure]
-    return treasure_value
-
-
-def collect_treasure(hero):
+def collect_treasure(hero: Hero):
     dict_add_treasure = {
         'health': hero.take_healing,
         'mana': hero.take_mana,
@@ -148,7 +135,22 @@ def collect_treasure(hero):
     print_collect_treasure(treasure)
 
 
-def reset_hero_attributes(hero):
+def generate_random_value_of_treasure(treasure: str):
+    from items.weapon import Weapon
+    from items.spell import Spell
+
+    dict_treasure_values = {
+        'health': random.randint(1, 20),
+        'mana': random.randint(1, 20),
+        'weapon': Weapon.create_weapon(random.choice(WEAPON_NAMES)),
+        'spell': Spell.create_spell(random.choice(SPELL_NAMES))
+    }
+
+    treasure_value = dict_treasure_values[treasure]
+    return treasure_value
+
+
+def reset_hero_attributes(hero: Hero):
     from items.weapon import Weapon
     from items.spell import Spell
     hero.health = hero.MAX_HEALTH
@@ -157,7 +159,7 @@ def reset_hero_attributes(hero):
     hero.spell = Spell.create_spell(random.choice(SPELL_NAMES))
 
 
-def reached_exit(position):
+def reached_exit(position: str):
     if position == 'G':
         print("You've successfully reached the exit!")
         return True
