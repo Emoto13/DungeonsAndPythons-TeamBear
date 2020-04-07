@@ -83,6 +83,11 @@ def fight_enemy(hero: Hero):
     from entities.enemy import Enemy
     enemy = Enemy.spawn_enemy()
     attack_with_spell_range(hero, enemy)
+
+    if not enemy.is_alive():
+        input('\nPress Enter to continue... ')
+        return
+
     regular_fight(hero, enemy)
     input('\nPress Enter to continue... ')
 
